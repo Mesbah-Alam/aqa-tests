@@ -253,7 +253,7 @@ public class JavaTestRunner {
 		// Updates to the excludes list may subsequently be supplied as a separate file, which supersedes the initial file.
 		// A known failures list (.kfl) file is optional.
 		// The automation here adds any files found (initial or updates) as 'custom' files. 
-		initialJtxFullPath = jckBase + "/lib/" + jckVersion + ".jtx";
+		initialJtxFullPath = jckBase + File.separator + "lib" + File.separator + jckVersion + ".jtx";
 		File initialJtxFile = new File(initialJtxFullPath);
 
 		if (initialJtxFile.exists()) {
@@ -305,8 +305,8 @@ public class JavaTestRunner {
 			kflFullPath = "";
 		}
 
+		testFlagJtxFullPath = "";
 		if (task == null || !task.equals("custom")) {
-			testFlagJtxFullPath = "";
 			if (testFlag != null) {
 				// Look for a known failures list file specific to TEST_FLAG testing
 				testFlagJtxFullPath = jckRoot + File.separator + "excludes" + File.separator + jckVersion + "-" + testFlag.toLowerCase() + ".jtx";
@@ -453,10 +453,11 @@ public class JavaTestRunner {
 
 		// Only use default initial jtx exclude and disregard the rest of jck exclude lists 
 		// when running a test via jck_custom.
+		
 		if (task == null || !task.equals("custom")) {  
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + customJtx + " " + kflFullPath + " " + testFlagJtxFullPath + "\";\n";
 		} else {
-			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + jtxDevFullPath + " " + customJtx + " " + kflFullPath + "\";\n";
+			fileContent += "set jck.excludeList.customFiles \"" + initialJtxFullPath + " " + jtxFullPath + " " + kflFullPath + "\";\n";
 		}
 		
 		fileContent += "runTests" + ";\n";
