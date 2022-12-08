@@ -253,6 +253,19 @@ public class JavaTestRunner {
                 } else {
 			fileUrl = "file:///" + jckBase + "/testsuite.jtt";
 		}
+        
+        newJtbLocation = resultDir + File.separator + "JTB"; 
+		workDir = resultDir + File.separator + "workdir"; 
+		reportDir = resultDir + File.separator + "report"; 
+		newJtbFileRef = newJtbLocation + File.separator + "generated.jtb";
+
+		File file = new File(newJtbLocation);
+		file.mkdir();
+		
+        generateJti();
+        
+        jtiFile =  newJtbLocation + File.separator + "generated.jti"; 
+        
 		System.out.println("Using jti file "+ jtiFile);
 		
 		// The first release of a JCK will have an initial excludes (.jtx) file in test-suite/lib - e.g. JCK-runtime-8b/lib/jck8b.jtx.
@@ -436,14 +449,6 @@ public class JavaTestRunner {
 			suppressOutOfMemoryDumpOptions = " -Xdump:system:none -Xdump:system:events=gpf+abort+traceassert+corruptcache -Xdump:snap:none -Xdump:snap:events=gpf+abort+traceassert+corruptcache -Xdump:java:none -Xdump:java:events=gpf+abort+traceassert+corruptcache -Xdump:heap:none -Xdump:heap:events=gpf+abort+traceassert+corruptcache"; 
 		}
 
-		newJtbLocation = resultDir + File.separator + "JTB"; 
-		workDir = resultDir + File.separator + "workdir"; 
-		reportDir = resultDir + File.separator + "report"; 
-		newJtbFileRef = newJtbLocation + File.separator + "generated.jtb";
-
-		File file = new File(newJtbLocation);
-		file.mkdir();
-
 		fileContent = "testsuite \"" + jckBase + "\";\n";
 		fileContent += "workDirectory -create -overwrite " + workDir + ";\n";
 		fileContent += "tests " + tests + ";\n";
@@ -499,6 +504,243 @@ public class JavaTestRunner {
 		return true; 
 	}
 	
+	public static boolean generateJti() throws Exception {
+		
+		String jtiContent = "#JavaTest Harness Configuration Interview\n"
+				+ "DESCRIPTION=JCK17 runtime template jti for STF automation\n"
+				+ "INTERVIEW=com.sun.jck.interview.JCKParameters\n"
+				+ "LOCALE=en_US\n"
+				+ "NAME=jck_runtime\n"
+				+ "QUESTION=jck.end\n"
+				+ "# TESTSUITE example: /jck/jck17/JCK-runtime-17\n"
+				+ "TESTSUITE=will_be_set_by_test_automation_at_run_time\n"
+				+ "# WORKDIR example: /home/user/JCK-runtime-17\n"
+				+ "WORKDIR=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.concurrency.concurrency=1\n"
+				+ "jck.env.description=JCK17 runtime template jti for STF automation\n"
+				+ "jck.env.envName=jck_runtime\n"
+				+ "jck.env.moduleSystem.compilerOptions=compilerAddModsOptionTemplate\\=\\ncompilerModulePathOptionTemplate\\=\\ncompilerModuleSourcePathOptionTemplate\\=\\n\n"
+				+ "jck.env.moduleSystem.vmOptions=vmModuleEntryOptionTemplate\\=--module \\#\\nvmModulePathOptionTemplate\\=--module-path \\#\\nvmAddModsOptionTemplate\\=--add-modules \\#[,\\#]\\n\n"
+				+ "jck.env.platform=jre\n"
+				+ "jck.env.platformModules=java.base java.compiler java.datatransfer java.desktop java.instrument java.logging java.management java.management.rmi java.naming java.prefs java.rmi java.scripting java.se java.security.jgss java.security.sasl java.sql java.sql.rowset java.xml java.xml.crypto java.transaction.xa java.net.http\n"
+				+ "jck.env.product=runtime\n"
+				+ "jck.env.runtime.RemoteAgent=Yes\n"
+				+ "jck.env.runtime.agent.networkClassLoading=No\n"
+				+ "jck.env.runtime.agent.passivePort=\n"
+				+ "jck.env.runtime.agent.resourcesRemoving=No\n"
+				+ "jck.env.runtime.audio.canPlayMidi=Yes\n"
+				+ "jck.env.runtime.audio.canPlaySound=Yes\n"
+				+ "jck.env.runtime.audio.canRecordSound=Yes\n"
+				+ "jck.env.runtime.audio.soundURLChoice=Yes\n"
+				+ "jck.env.runtime.audio.soundURLYesJCK=.WAV\n"
+				+ "jck.env.runtime.audio=Yes\n"
+				+ "jck.env.runtime.awt.crossWindowFocusTransferSupported=Yes\n"
+				+ "jck.env.runtime.awt.robotAvailable=Yes\n"
+				+ "jck.env.runtime.awt.splashScreenOpt=-splash\\:\\#\n"
+				+ "jck.env.runtime.awt.splashScreenSupported=Yes\n"
+				+ "jck.env.runtime.awt=Yes\n"
+				+ "jck.env.runtime.fp.doubleMaxExponent=\n"
+				+ "jck.env.runtime.fp.doubleMinExponent=\n"
+				+ "jck.env.runtime.fp.floatMaxExponent=\n"
+				+ "jck.env.runtime.fp.floatMinExponent=\n"
+				+ "jck.env.runtime.fp.format=Intel, 15 bit exponent\n"
+				+ "jck.env.runtime.fp.supportExtended=Yes\n"
+				+ "jck.env.runtime.fp=Yes\n"
+				+ "jck.env.runtime.ftpSupport=Yes\n"
+				+ "# jck.env.runtime.idl.orbHost example: xxxx.xxxx.xxxx.com\n"
+				+ "jck.env.runtime.idl.orbHost=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.idl.orbPort=9876\n"
+				+ "jck.env.runtime.idl=Yes\n"
+				+ "jck.env.runtime.jaas.authPolicy=standard system property\n"
+				+ "jck.env.runtime.jaas.loginConfig=standard system property\n"
+				+ "jck.env.runtime.jaas=Yes\n"
+				+ "jck.env.runtime.jdwp.VMSuspended=Yes\n"
+				+ "jck.env.runtime.jdwp.connectorType=attaching\n"
+				+ "jck.env.runtime.jdwp.jdwpOpts=-agentlib\\:jdwp\\=server\\=y,transport\\=dt_socket,address\\=localhost\\:35000,suspend\\=y\n"
+				+ "jck.env.runtime.jdwp.jdwpSupported=Yes\n"
+				+ "jck.env.runtime.jdwp.transportAddress=localhost\\:35000\n"
+				+ "jck.env.runtime.jdwp.transportClass=javasoft.sqe.jck.lib.jpda.jdwp.SocketTransportService\n"
+				+ "jck.env.runtime.jdwp=Yes\n"
+				+ "jck.env.runtime.jgss.kdc=No\n"
+				+ "# jck.env.runtime.jgss.kdcHostName example: xxxx.xxxx.xxxx.com\n"
+				+ "jck.env.runtime.jgss.kdcHostName=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.jgss.kdcRealm=No\n"
+				+ "# jck.env.runtime.jgss.kdcRealmName example: xxxx.xxxx.xxxx.com\n"
+				+ "jck.env.runtime.jgss.kdcRealmName=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.jgss.krb5ClientPassword example: password2\n"
+				+ "jck.env.runtime.jgss.krb5ClientPassword=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.jgss.krb5ClientUsername example: user2\n"
+				+ "jck.env.runtime.jgss.krb5ClientUsername=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.jgss.krb5ServerPassword example: password1\n"
+				+ "jck.env.runtime.jgss.krb5ServerPassword=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.jgss.krb5ServerUsername example: user1\n"
+				+ "jck.env.runtime.jgss.krb5ServerUsername=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.jgss.loginModule=Yes\n"
+				+ "jck.env.runtime.jgss=Yes\n"
+				+ "jck.env.runtime.jplis.jplisCmdLine=Yes\n"
+				+ "jck.env.runtime.jplis.jplisLivePhase=Yes\n"
+				+ "jck.env.runtime.jplis.jplisLivePhaseLauncherImpl=javasoft.sqe.jck.lib.attach.JPLISAttachConnector\n"
+				+ "jck.env.runtime.jplis=Yes\n"
+				+ "jck.env.runtime.jsse.isJKSSupported=Yes\n"
+				+ "jck.env.runtime.jsse=Yes\n"
+				+ "jck.env.runtime.memory.expectOutOfMemory=Yes\n"
+				+ "jck.env.runtime.memory.memoryAllocation=Yes\n"
+				+ "jck.env.runtime.memory=Yes\n"
+				+ "# jck.env.runtime.net.localHostIPAddr example: n.n.n.n\n"
+				+ "jck.env.runtime.net.localHostIPAddr=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.net.localHostName example: xxxx.xxxx.xxxx.com\n"
+				+ "jck.env.runtime.net.localHostName=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.net.other=Yes\n"
+				+ "jck.env.runtime.net.tcpLower=\n"
+				+ "jck.env.runtime.net.tcpRange=No\n"
+				+ "jck.env.runtime.net.tcpUpper=\n"
+				+ "# jck.env.runtime.net.testHost1IPAddr example: n.n.n.n\n"
+				+ "jck.env.runtime.net.testHost1IPAddr=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.net.testHost1Name example: xxxx.xxxx.xxxx.com\n"
+				+ "jck.env.runtime.net.testHost1Name=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.net.testHost2IPAddr example: n.n.n.n\n"
+				+ "jck.env.runtime.net.testHost2IPAddr=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.net.testHost2Name example: xxxx.xxxx.xxxx.com\n"
+				+ "jck.env.runtime.net.testHost2Name=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.net.udpLower=\n"
+				+ "jck.env.runtime.net.udpRange=No\n"
+				+ "jck.env.runtime.net.udpUpper=\n"
+				+ "jck.env.runtime.net=Yes\n"
+				+ "jck.env.runtime.print.hasPrinter=Yes\n"
+				+ "jck.env.runtime.print=Yes\n"
+				+ "jck.env.runtime.remoteAgent.loadClasses=No\n"
+				+ "jck.env.runtime.remoteAgent.passiveHost=localhost\n"
+				+ "jck.env.runtime.remoteAgent.passivePort=\n"
+				+ "jck.env.runtime.remoteAgent.passivePortDefault=Yes\n"
+				+ "jck.env.runtime.remoteAgent.serviceCommand=java  -cp @{testsuite}/lib/javatest.jar\\:@{testsuite}/classes\\:@{testsuite}/lib/jtjck.jar  -Djava.security.policy\\=@{testsuite}/lib/jck.policy  -Djavatest.security.allowPropertiesAccess\\=true com.sun.javatest.agent.AgentMain -passivePort @{port}\n"
+				+ "jck.env.runtime.services.autostartServices=RMI_service ORB_service Distributed_Agent\n"
+				+ "jck.env.runtime.services.servicesOn=No\n"
+				+ "jck.env.runtime.testExecute.activationPortValue=\n"
+				+ "jck.env.runtime.testExecute.additionalClasspath=\n"
+				+ "jck.env.runtime.testExecute.classpath=command line option\n"
+				+ "jck.env.runtime.testExecute.classpathEnv=CLASSPATH\n"
+				+ "jck.env.runtime.testExecute.classpathOpt=-classpath \\#\n"
+				+ "# jck.env.runtime.testExecute.cmdAsFile example: /home/user/jdk17/jre/bin/java\n"
+				+ "jck.env.runtime.testExecute.cmdAsFile=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.testExecute.jarExecution=Yes\n"
+				+ "jck.env.runtime.testExecute.jarExecutionOpt=-jar \\#\n"
+				+ "jck.env.runtime.testExecute.jmx=Yes\n"
+				+ "# jck.env.runtime.testExecute.jmxResourcePathFileValue example: /jck/jck17/natives/linux_x86-64\n"
+				+ "jck.env.runtime.testExecute.jmxResourcePathFileValue=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.testExecute.jni=Yes\n"
+				+ "jck.env.runtime.testExecute.jvmti=Yes\n"
+				+ "jck.env.runtime.testExecute.jvmtiAgentOptionsTempl=-agentlib\\:\\#\\=@\n"
+				+ "jck.env.runtime.testExecute.jvmtiLivePhase=Yes\n"
+				+ "jck.env.runtime.testExecute.jvmtiLivePhaseLauncherImpl=javasoft.sqe.jck.lib.attach.JVMTIAttachConnector\n"
+				+ "jck.env.runtime.testExecute.libPath=environment variable\n"
+				+ "# jck.env.runtime.testExecute.libPathEnv example: LD_LIBRARY_PATH\n"
+				+ "jck.env.runtime.testExecute.libPathEnv=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.testExecute.moduleOptions=Yes\n"
+				+ "# jck.env.runtime.testExecute.nativeLibPathFileValue example: /jck/jck17/natives/linux_x86-64\n"
+				+ "jck.env.runtime.testExecute.nativeLibPathFileValue=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.testExecute.nativeLibrariesLocation=Yes\n"
+				+ "jck.env.runtime.testExecute.nativeLibsLinkage=dynamic\n"
+				+ "jck.env.runtime.testExecute.optionSpecification=Yes\n"
+				+ "jck.env.runtime.testExecute.otherEnvVars=\n"
+				+ "jck.env.runtime.testExecute.otherOpts=\n"
+				+ "jck.env.runtime.testExecute.rmi=Yes\n"
+				+ "jck.env.runtime.testExecute.rmiActivationSupport=Yes\n"
+				+ "jck.env.runtime.testExecute.stdActivationPort=Yes\n"
+				+ "jck.env.runtime.testExecute.verify=-Xfuture\n"
+				+ "# jck.env.runtime.url.fileURL example: file\\:///home/user/urlfile.txt\n"
+				+ "jck.env.runtime.url.fileURL=will_be_set_by_test_automation_at_run_time\n"
+				+ "# jck.env.runtime.url.ftpURL example: ftp\\://user\\:password@xxxx.xxxx.xxxx.com/xxx.txt\n"
+				+ "jck.env.runtime.url.ftpURL=ftp\\://jckftp\\:CqwbpqMpe4Q68kDRXj4mqxM7W@jckservices.adoptium.net/filename.txt\n"
+				+ "# jck.env.runtime.url.httpURL example: http\\://xxxx.xxxx.xxxx.com/index.html\n"
+				+ "jck.env.runtime.url.httpURL=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.runtime.url=Yes\n"
+				+ "jck.env.simpleOrAdvanced=advanced\n"
+				+ "# jck.env.testPlatform.display example: ':1' or xxxx.xxxx.xxxx.com\\:0.0\n"
+				+ "jck.env.testPlatform.display=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.testPlatform.headless=No\n"
+				+ "jck.env.testPlatform.jvmti=Yes\n"
+				+ "jck.env.testPlatform.multiJVM=Yes\n"
+				+ "jck.env.testPlatform.nativeCode=Yes\n"
+				+ "jck.env.testPlatform.needProxy=No\n"
+				+ "jck.env.testPlatform.os=Current system\n"
+				+ "jck.env.testPlatform.processCreationSupport=Yes\n"
+				+ "jck.env.testPlatform.proxyPort=\n"
+				+ "jck.env.testPlatform.remoteNetworking=Remote network support\n"
+				+ "# jck.env.testPlatform.systemRoot example: C\\:\\\\WINDOWS\n"
+				+ "jck.env.testPlatform.systemRoot=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.env.testPlatform.typecheckerSpecific=Yes\n"
+				+ "jck.env.testPlatform.useAgent=No\n"
+				+ "# jck.excludeList.customFiles example: /jck/jck17/excludes/jck17.jtx\\n/jck/jck17/excludes/jck17.kfl\n"
+				+ "jck.excludeList.customFiles=will_be_set_by_test_automation_at_run_time\n"
+				+ "jck.excludeList.excludeListType=custom\n"
+				+ "jck.excludeList.latestAutoCheck=No\n"
+				+ "jck.excludeList.latestAutoCheckInterval=7\n"
+				+ "jck.excludeList.latestAutoCheckMode=everyXDays\n"
+				+ "jck.excludeList.needExcludeList=Yes\n"
+				+ "jck.keywords.keywords.mode=expr\n"
+				+ "jck.keywords.keywords.value=\\!interactive\n"
+				+ "jck.keywords.keywords=\\!interactive\n"
+				+ "jck.keywords.needKeywords=Yes\n"
+				+ "jck.knownFailuresList.customFiles=\n"
+				+ "jck.knownFailuresList.needKfl=No\n"
+				+ "jck.priorStatus.needStatus=No\n"
+				+ "jck.priorStatus.status=\n"
+				+ "jck.tests.chooseTests=Yes\n"
+				+ "jck.tests.needTests=No\n"
+				+ "jck.tests.setOfModules=java.base java.compiler java.datatransfer java.desktop java.instrument java.logging java.management java.management.rmi java.naming java.prefs java.rmi java.scripting java.se java.security.jgss java.security.sasl java.sql java.sql.rowset java.xml java.xml.crypto\n"
+				+ "jck.tests.tests=\n"
+				+ "jck.tests.treeOrFile=tree\n"
+				+ "jck.timeout.timeout=1\n"
+				+ "jck.env.testPlatform.testsOnPreviewFeaturesEnabled=Yes\n"
+				+ "jck.env.runtime.testExecute.otherOpts=--enable-preview\n"
+				+ "";
+		
+		new File(newJtbLocation + File.separator + "generated.jti").delete();
+		new File(newJtbLocation + File.separator + "generated.jti").createNewFile(); 
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(newJtbLocation + File.separator + "generated.jti"))); 
+		bw.write(jtiContent); 
+		bw.flush();
+		bw.close();
+		
+		System.out.println("Echoing contents of generated jti file before covnersion: " + newJtbLocation + File.separator + "generated.jti"); 
+		System.out.println(">>>>>>>>>>");
+		BufferedReader br = new BufferedReader (new FileReader(newJtbLocation + File.separator + "generated.jti")); 
+		while(true) {
+			String s = br.readLine(); 
+			if ( s == null) {
+				break; 
+			} else {
+				System.out.println(s); 
+			}
+		}
+		System.out.println("<<<<<<<<");
+		
+		/*
+		 * new File(newJtbLocation + File.separator + "generated.jti").delete(); new
+		 * File(newJtbLocation + File.separator + "generated.jti").createNewFile();
+		 * 
+		 * List<String> iconvCmd = new ArrayList<>(); iconvCmd.add("iconv");
+		 * iconvCmd.add("-f"); iconvCmd.add("IBM-1047"); iconvCmd.add("-t");
+		 * iconvCmd.add("ISO8859-1"); iconvCmd.add(newJtbLocation + File.separator +
+		 * "temp.jti");
+		 * 
+		 * ProcessBuilder rmidProcessBuilder = new ProcessBuilder(iconvCmd);
+		 * rmidProcessBuilder.redirectOutput(new File(newJtbLocation + File.separator +
+		 * "generated.jti")); Process pp = rmidProcessBuilder.start(); boolean r =
+		 * pp.waitFor(15, TimeUnit.MINUTES);
+		 * 
+		 * System.out.
+		 * println("Echoing contents of generated jti file AFTER covnersion: " +
+		 * newJtbLocation + File.separator + "generated.jti");
+		 * System.out.println(">>>>>>>>>>"); BufferedReader br2 = new BufferedReader
+		 * (new FileReader(newJtbLocation + File.separator + "generated.jti"));
+		 * while(true) { String s = br2.readLine(); if ( s == null) { break; } else {
+		 * System.out.println(s); } } System.out.println("<<<<<<<<");
+		 */
+		return true;
+	}
+
 	public static boolean jckConfigurationForMultijvmWithNoAgent() throws Exception {
 		pathToJava = testJdk + File.separator + "bin" + File.separator + "java";
 		String pathToRmic = testJdk + File.separator + "bin" + File.separator + "rmic";
@@ -1381,7 +1623,7 @@ public class JavaTestRunner {
 		iconvCmd.add(tempFile);
 
 		ProcessBuilder rmidProcessBuilder = new ProcessBuilder(iconvCmd);
-		rmidProcessBuilder.redirectOutput(new File(newJtbFileRef)); 
+		rmidProcessBuilder.redirectOutput(new File(newJtbFileRef));
 		Process pp = rmidProcessBuilder.start();
 		return pp.waitFor(15, TimeUnit.MINUTES);
 	}
