@@ -695,17 +695,17 @@ public class JavaTestRunner {
 				+ "jck.env.runtime.testExecute.otherOpts=--enable-preview\n"
 				+ "";
 		
-		new File(newJtbLocation + File.separator + "generated.jti").delete();
-		new File(newJtbLocation + File.separator + "generated.jti").createNewFile(); 
+		new File(newJtbLocation + File.separator + "temp.jti").delete();
+		new File(newJtbLocation + File.separator + "temp.jti").createNewFile(); 
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(newJtbLocation + File.separator + "generated.jti"))); 
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(newJtbLocation + File.separator + "temp.jti"))); 
 		bw.write(jtiContent); 
 		bw.flush();
 		bw.close();
 		
-		System.out.println("Echoing contents of generated jti file before covnersion: " + newJtbLocation + File.separator + "generated.jti"); 
+		System.out.println("Echoing contents of generated jti file before covnersion: " + newJtbLocation + File.separator + "temp.jti"); 
 		System.out.println(">>>>>>>>>>");
-		BufferedReader br = new BufferedReader (new FileReader(newJtbLocation + File.separator + "generated.jti")); 
+		BufferedReader br = new BufferedReader (new FileReader(newJtbLocation + File.separator + "temp.jti")); 
 		while(true) {
 			String s = br.readLine(); 
 			if ( s == null) {
@@ -716,29 +716,35 @@ public class JavaTestRunner {
 		}
 		System.out.println("<<<<<<<<");
 		
-		/*
-		 * new File(newJtbLocation + File.separator + "generated.jti").delete(); new
-		 * File(newJtbLocation + File.separator + "generated.jti").createNewFile();
-		 * 
-		 * List<String> iconvCmd = new ArrayList<>(); iconvCmd.add("iconv");
-		 * iconvCmd.add("-f"); iconvCmd.add("IBM-1047"); iconvCmd.add("-t");
-		 * iconvCmd.add("ISO8859-1"); iconvCmd.add(newJtbLocation + File.separator +
-		 * "temp.jti");
-		 * 
-		 * ProcessBuilder rmidProcessBuilder = new ProcessBuilder(iconvCmd);
-		 * rmidProcessBuilder.redirectOutput(new File(newJtbLocation + File.separator +
-		 * "generated.jti")); Process pp = rmidProcessBuilder.start(); boolean r =
-		 * pp.waitFor(15, TimeUnit.MINUTES);
-		 * 
-		 * System.out.
-		 * println("Echoing contents of generated jti file AFTER covnersion: " +
-		 * newJtbLocation + File.separator + "generated.jti");
-		 * System.out.println(">>>>>>>>>>"); BufferedReader br2 = new BufferedReader
-		 * (new FileReader(newJtbLocation + File.separator + "generated.jti"));
-		 * while(true) { String s = br2.readLine(); if ( s == null) { break; } else {
-		 * System.out.println(s); } } System.out.println("<<<<<<<<");
-		 */
-		return true;
+		new File(newJtbLocation + File.separator + "generated.jti").delete();
+		new File(newJtbLocation + File.separator + "generated.jti").createNewFile();
+		
+		List<String> iconvCmd = new ArrayList<>();
+		iconvCmd.add("iconv");
+		iconvCmd.add("-f");
+		iconvCmd.add("IBM-1047");
+		iconvCmd.add("-t");
+		iconvCmd.add("ISO8859-1");
+		iconvCmd.add(newJtbLocation + File.separator + "temp.jti");
+
+		ProcessBuilder rmidProcessBuilder = new ProcessBuilder(iconvCmd);
+		rmidProcessBuilder.redirectOutput(new File(newJtbLocation + File.separator + "generated.jti"));
+		Process pp = rmidProcessBuilder.start();
+		boolean r = pp.waitFor(15, TimeUnit.MINUTES);
+		
+		System.out.println("Echoing contents of generated jti file AFTER covnersion: " + newJtbLocation + File.separator + "generated.jti"); 
+		System.out.println(">>>>>>>>>>");
+		BufferedReader br2 = new BufferedReader (new FileReader(newJtbLocation + File.separator + "generated.jti")); 
+		while(true) {
+			String s = br2.readLine();
+			if ( s == null) {
+				break; 
+			} else {
+				System.out.println(s); 
+			}
+		}
+		System.out.println("<<<<<<<<");
+		return r;
 	}
 
 	public static boolean jckConfigurationForMultijvmWithNoAgent() throws Exception {
