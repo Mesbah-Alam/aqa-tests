@@ -367,6 +367,10 @@ def setup() {
 		} else {
 			CUSTOMIZED_SDK_URL_OPTION = ""
 		}
+		
+		if (env.BUILD_LIST.contains('jck')) {
+			CUSTOMIZED_SDK_URL_OPTION += ' ' + params.APPLICATION_OPTIONS
+		}
 
 		if (SDK_RESOURCE == 'upstream' && !params.CUSTOMIZED_SDK_URL) {
 			timeout(time: 1, unit: 'HOURS') {
@@ -972,10 +976,32 @@ def archiveFile(filename, forceStoreOnJenkins) {
 	}
 }
 
+def buildRiJdkUrl() {
+	def server = Artifactory.server params.ARTIFACTORY_SERVER
+	def repoForUpload = ''
+	def repoForRi = ''
+	if (params.ARTIFACTORY_REPO.contains(',')) {
+		String[] repos = params.ARTIFACTORY_REPO.split(",")
+		repoForRi = repos[1].trim()
+	}
+	
+	def riURL = ''
+	if (env.SPEC.startsWith('aix') || env.SPEC.startsWith('zos')) { 
+		riURL = server + '/' + repoForRi + '/Latest/x86-64_linux' + params.JDK_VERSION
+	} else {
+		riURL = server + '/' + repoForRi + '/Latest/' + PLATFORM + params.JDK_VERSION
+	}
+	return riURL
+}
+
 def uploadToArtifactory(pattern, artifactoryUploadDir="") {
 	if (params.ARTIFACTORY_SERVER) {
 		def server = Artifactory.server params.ARTIFACTORY_SERVER
 		def artifactoryRepo = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : "sys-rt-generic-local"
+		if (artifactoryRepo.contains(',')) {
+			String[] repos = artifactoryRepo.split(",")
+			artifactoryRepo = repos[0].trim()
+		}
 		def artifactoryRoorDir = params.ARTIFACTORY_ROOT_DIR ? params.ARTIFACTORY_ROOT_DIR : getJenkinsDomain()
 		if (artifactoryRoorDir.endsWith("/")) {
 			artifactoryRoorDir = artifactoryRoorDir.substring(0, artifactoryRoorDir.length() - 1);
