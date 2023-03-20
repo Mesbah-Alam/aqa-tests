@@ -22,7 +22,7 @@ def testBuild() {
 				sh 'tar -xzf OpenJDK8U-jdk_x64_linux_hotspot*.gz -C ${WORKSPACE}/j2sdk-image --strip-components 1'
 				sh '${WORKSPACE}/j2sdk-image/jre/bin/java -version'
 				sh 'git clone https://github.com/adoptium/aqa-systemtest'
-				sh 'git clone https://github.com/adoptium/STF'
+				sh 'git clone https://github.com/Mesbah-Alam/STF -b fix-java-home-setting'
 				sh 'ant -f ./aqa-systemtest/openjdk.build/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
 				sh 'ant -f ./aqa-systemtest/openjdk.test.mauve/build.xml -Djava.home=${WORKSPACE}/j2sdk-image/jre -Dprereqs_root=${WORKSPACE}/systemtest_prereqs configure'
 				archiveArtifacts '**/systemtest_prereqs/cvsclient/org-netbeans-lib-cvsclient.jar'
