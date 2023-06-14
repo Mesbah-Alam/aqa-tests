@@ -19,8 +19,11 @@
 		<variations>
 			<variation>NoOptions</variation>
 		</variations>
-		<command>$(JCK_CMD_TEMPLATE) tests=$(JCK_CUSTOM_TARGET) task=custom; \
-	$(TEST_STATUS)</command>
+		<command>$(GEN_JTB_GENERIC) tests=$(JCK_CUSTOM_TARGET) task=custom; \
+		$(EXEC_RUNTIME_TEST); \
+		$(TEST_STATUS); \
+		$(GEN_SUMMARY_GENERIC) tests=$(JCK_CUSTOM_TARGET) task=custom
+		</command>
 		<levels>
 			<level>extended</level>
 		</levels>
