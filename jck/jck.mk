@@ -130,7 +130,7 @@ JCK_CMD_TEMPLATE = $(JAVA_TO_TEST) -Djvm.options=$(Q)$(JVM_OPTIONS)$(Q) -Dother.
 WORKSPACE=/home/jenkins/jckshare/workspace/output_$(UNIQUEID)/$@
 
 ifneq ($(filter aix_ppc-64 zos_390 linux_ppc-64_le linux_390-64, $(SPEC)),)
-   # TODO: Replace with dynamically installed RI JDK
+   #TODO: Replace with dynamically installed RI JDK
    REFERENCE_JAVA_CMD=/home/jenkins/jckshare/ri/jdk-11.0.19/bin/java
    USEQ='
    PREP = mkdir -p $(WORKSPACE); cp -rf $(CONFIG_ALT_PATH)$(D)jck$(JCK_VERSION_NUMBER)$(D)compiler.jti $(WORKSPACE)$(D); cp -rf $(TEST_ROOT)$(D)jck$(D)jtrunner $(WORKSPACE)
